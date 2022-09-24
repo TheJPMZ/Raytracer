@@ -2,5 +2,6 @@
 A ray tracer for tracing rays
 
 ## Render:
-![imagen](https://user-images.githubusercontent.com/64183934/189276368-c3a066ac-4164-4364-9742-9e0e26c3c1cb.png)
+![imagen](https://user-images.githubusercontent.com/64183934/192138085-8d1855bb-1be5-408d-8eca-7f6ba8e57012.png)
+
 
