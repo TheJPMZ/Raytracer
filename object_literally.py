@@ -1,4 +1,6 @@
 from struct import unpack
+from numpy import arctan2, arccos, pi
+from mathmeme import div, norm
 
 class Model():
     def __init__(self, filename):
@@ -65,9 +67,7 @@ class Texture():
                         print("Rendering filename", l/(self.width*self.height)*100, end="%\r")
                 self.pixels.append(pixelRow)
             print("Succesfully loaded Texture: ",filename)
-                
-            
-                
+                        
     def getColor(self, u, v):
         if 0 <= u <= 1 and 0 <= v <= 1:
             x = int(v * self.width)
@@ -78,3 +78,10 @@ class Texture():
                 pass         
         else:
             return (1,1,1)
+        
+    def getEnvColor(self, dir):
+        dir = div(dir, norm(dir))
+        x = int((arctan2(dir[2], dir[0]) / (2 * pi) + 0.5) * self.width)
+        y = int(arccos(-dir[1]) / pi * self.height)
+
+        return self.pixels[y][x]    

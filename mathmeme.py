@@ -13,7 +13,7 @@ def matmul(A, B):
 
 
 
-def mul(A, B): # np.multiply || a*b Vector3
+def mul(A:list, B:list or float or int): # np.multiply || a*b Vector3
     if isinstance(B,(float,int)):
         return [C*B for C in A]
     
@@ -65,7 +65,7 @@ def inverse(a): # np.linalg.inv
     adj = [[(-1)**(i+j) * determinant(minor(a,i,j)) for j in range(len(a))] for i in range(len(a))]
     return div(transpose(adj),det)
                 
-def flatten(a):
+def flatten(a) -> list: 
     """Turn a nested list into a flat list.
 
     Args:

@@ -17,6 +17,10 @@ colors = {
     "rose": (1, 0, 0.5)
     }
 
+OPAQUE = 0
+REFLECTIVE = 1
+TRANSPARENT = 2
+
 class Intersect(object):
     def __init__(self, distance, point, normal, sceneObj):
         self.distance = distance
@@ -25,12 +29,15 @@ class Intersect(object):
         self.sceneObj = sceneObj
 
 class Material(object):
-    def __init__(self, diffuse = "white"):
+    def __init__(self, diffuse = "white", ior = 1, spec = 1.0, matType = OPAQUE):
         
         if isinstance(diffuse,str):
             diffuse = colors.get(diffuse)
         
         self.diffuse = diffuse
+        self.spec = spec
+        self.ior = ior
+        self.matType = matType
 
 
 class Sphere(object):
