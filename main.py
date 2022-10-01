@@ -1,41 +1,56 @@
+from numpy import diff, mat
 from gl import Raytracer
-from figures import REFLECTIVE, TRANSPARENT, Sphere, Intersect, Material
+from figures import REFLECTIVE, TRANSPARENT, Sphere, Intersect, Material, AABB
 from lights import AmbientLight, DirectionalLight, PointLight
 from object_literally import Texture
 
-width =  1024
-height =  1024
+width =  256
+height =  256
 
-o1 = Material(diffuse = "red", spec = 64, ior=1)
-o2 = Material(diffuse = "blue", spec = 64, ior = 2)
-o3 = Material(diffuse = "yellow", spec = 64, ior = 3)
+def draw_cube(coords, size, material):
+    x,y,z = coords
+    tr = size/2
+    
+    rtx.scene.append( AABB((x-tr,y,z), (0,size,size), material) )
+    rtx.scene.append( AABB((x+tr,y,z), (0,size,size), material) )
+    rtx.scene.append( AABB((x,y-tr,z), (size,0,size), material) )
+    rtx.scene.append( AABB((x,y+tr,z), (size,0,size), material) )
+    rtx.scene.append( AABB((x,y,z-tr), (size,size,0), material) )
+    rtx.scene.append( AABB((x,y,z+tr), (size,size,0), material) )
 
-r1 = Material(diffuse = "red", spec = 1, matType= REFLECTIVE,)
-r2 = Material(diffuse = "blue", spec = 32, matType = REFLECTIVE)
-r3 = Material(diffuse = "yellow", spec = 64, matType = REFLECTIVE)
+wall = Material(diffuse = "blue", spec = 32, matType=REFLECTIVE)
+roof = Material(diffuse = (0.6, 0.6, 0.6))
+back = Material(diffuse = (0.3, 0.3, 0.3))
 
-t1 = Material(diffuse = "red", spec = 64, matType = TRANSPARENT)
-t2 = Material(diffuse = "blue", spec = 64, matType = TRANSPARENT)
-t3 = Material(diffuse = "yellow", spec = 64, matType = TRANSPARENT)
+cube1 = Material(diffuse = "red")
+cube2 = Material(diffuse = "red", spec = 32, ior = 2, matType=TRANSPARENT)
+cube3 = Material(diffuse = "orange")
+cube4 = Material(diffuse = "orange", spec = 32, ior = 2, matType=TRANSPARENT)
 
 rtx = Raytracer(width, height)
 
-rtx.envMap = Texture("mansion.bmp")
+#rtx.envMap = Texture("mansion.bmp")
 
-rtx.lights.append( AmbientLight(intensity = 0.2 ))
-rtx.lights.append( DirectionalLight(direction = (-1,-1,-1), intensity = 0.5 ))
+rtx.lights.append( AmbientLight(intensity = 0.5 ))
+rtx.lights.append( PointLight(point=(0,0,-2)))
 
-rtx.scene.append( Sphere((-3,3,-10), 1, o1)  )
-rtx.scene.append( Sphere((0,3,-10), 1, o2)  )
-rtx.scene.append( Sphere((3,3,-10), 1, o3)  )
+z = 10
+size = 6
+tr = size/2
 
-rtx.scene.append( Sphere((-3,0,-10), 1, t1)  )
-rtx.scene.append( Sphere((0,0,-10), 1, t2)  )
-rtx.scene.append( Sphere((3,0,-10), 1, t3)  )
+rtx.scene.append( AABB((tr,0,-z), (0.1,size,z), wall) )
+rtx.scene.append( AABB((-tr,0,-z), (0.1,size,z), wall) )
+rtx.scene.append( AABB((0,tr,-z), (size,0.1,z), roof) )
+rtx.scene.append( AABB((0,-tr,-z), (size,0.1,z), roof) )
 
-rtx.scene.append( Sphere((-3,-3,-10), 1, r1)  )
-rtx.scene.append( Sphere((0,-3,-10), 1, r2)  )
-rtx.scene.append( Sphere((3,-3,-10), 1, r3)  )
+rtx.scene.append( AABB((0,0,-z), (size,size,0.1), back) )
+
+
+
+draw_cube((-1,-1,-5), 0.5, cube1)
+draw_cube((1,1,-5), 0.6, cube2)
+draw_cube((1,-1,-5), 0.7, cube3)
+draw_cube((-1,1,-5), 0.8, cube4)
 
 rtx.glRender()
 

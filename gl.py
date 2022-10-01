@@ -1,5 +1,6 @@
 import struct
 from math import cos, sin, tan, pi
+
 from figures import OPAQUE, REFLECTIVE, TRANSPARENT
 from lights import reflectVector
 from mathmeme import mul, div, add, norm,dot, matmul, sub
@@ -133,7 +134,7 @@ class Raytracer(object):
         if (0 <= x < self.width) and (0 <= y < self.height):
             self.pixels[x][y] = clr or self.currColor
 
-    def sceneIntersect(self, orig, dir, sceneObj):
+    def scene_intersect(self, orig, dir, sceneObj):
         depth = float('inf')
         intersect = None
 
@@ -148,7 +149,7 @@ class Raytracer(object):
         return intersect
 
     def cast_ray(self, orig, dir, sceneObj = None, recursion = 0):
-        intersect = self.sceneIntersect(orig, dir, sceneObj)
+        intersect = self.scene_intersect(orig, dir, sceneObj)
 
         if not intersect or recursion >= MAX_RECURSION_DEPTH:
             if self.envMap:
@@ -160,16 +161,16 @@ class Raytracer(object):
 
         material = intersect.sceneObj.material
 
-        finalColor = [0, 0, 0]
-        objectColor = [*material.diffuse]
-
+        finalColor:list = [0, 0, 0]
+        objectColor:list = [*material.diffuse]
+        refractColor:list = [0, 0, 0]
         if material.matType == OPAQUE:
             for light in self.lights:
-                diffuseColor = light.getDiffuseColor(intersect, self)
-                specColor = light.getSpecColor(intersect, self)
-                shadowIntensity = light.getShadowIntensity(intersect, self)
+                diffuseColor:list = light.getDiffuseColor(intersect, self)
+                specColor:list = light.getSpecColor(intersect, self)
+                shadowIntensity:int = light.getShadowIntensity(intersect, self)
 
-                lightColor = (diffuseColor + specColor) * (1 - shadowIntensity)
+                lightColor:list = mul(add(diffuseColor,specColor),(1 - shadowIntensity))
 
                 finalColor = add(finalColor, lightColor)
 
@@ -199,8 +200,7 @@ class Raytracer(object):
                 refract = refractVector(intersect.normal, dir, material.ior )
                 refractOrig = sub(intersect.point, bias) if outside else add(intersect.point, bias)
                 refractColor = self.cast_ray(refractOrig, refract, None, recursion + 1)
-            else:
-                refractColor = [0,0,0]
+
             finalColor = add(mul(reflectColor,kr),add(mul(refractColor,(1 - kr)),specColor))
 
         finalColor = [a*b for a,b in zip(finalColor, objectColor)]

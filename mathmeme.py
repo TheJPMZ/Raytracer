@@ -19,7 +19,7 @@ def mul(A:list, B:list or float or int): # np.multiply || a*b Vector3
     
     return [sum(a*b for a,b in zip(C,B)) for C in A] 
 
-def dot(a,b): # np.dot
+def dot(a,b) -> float: # np.dot
     return sum(a*b for a,b in zip(a,b))
 
 def sub(a,b): # np.subtract || a-b
@@ -28,8 +28,10 @@ def sub(a,b): # np.subtract || a-b
     return [a[i]-b[i] for i in range(len(a))]
 
 def add(a,b): # np.add || a+b
+    
     if any(isinstance(x, list) for x in a):
         return [add(a[i],b[i]) for i in range(len(a))]
+    #print(a,b)
     return [a[i]+b[i] for i in range(len(a))]
 
 def cross(a,b): # np.cross 

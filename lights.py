@@ -65,7 +65,7 @@ class PointLight(object):
 
     def getDiffuseColor(self, intersect, raytracer):
         light_dir = sub(self.point, intersect.point)
-        light_dir = light_dir / norm(light_dir)
+        light_dir = div(light_dir, norm(light_dir))
 
         # att = 1 / (Kc + Kl * d + Kq * d * d)
         #lightDistance = np.linalg.norm(np.subtract(self.point, intersect.point))
@@ -82,12 +82,12 @@ class PointLight(object):
 
     def getSpecColor(self, intersect, raytracer):
         light_dir = sub(self.point, intersect.point)
-        light_dir = light_dir / norm(light_dir)
+        light_dir = div(light_dir, norm(light_dir))
 
         reflect = reflectVector(intersect.normal, light_dir)
 
         view_dir = sub(raytracer.camPosition, intersect.point)
-        view_dir = view_dir / norm(view_dir)
+        view_dir = div(view_dir,norm(view_dir))
 
         # att = 1 / (Kc + Kl * d + Kq * d * d)
         #lightDistance = np.linalg.norm(np.subtract(self.point, intersect.point))
@@ -103,7 +103,7 @@ class PointLight(object):
 
     def getShadowIntensity(self, intersect, raytracer):
         light_dir = sub(self.point, intersect.point)
-        light_dir = light_dir / norm(light_dir)
+        light_dir = div(light_dir,norm(light_dir))
 
         shadow_intensity = 0
         shadow_intersect = raytracer.scene_intersect(intersect.point, light_dir, intersect.sceneObj)
