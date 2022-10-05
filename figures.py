@@ -1,4 +1,4 @@
-from mathmeme import mul, sub, add, div, dot, norm
+from mathmeme import mul, sub, add, div, dot, norm, cross
 from numpy import arctan2, pi, arccos
 
 colors = {
@@ -105,9 +105,69 @@ class Plane:
 
         return None
 
-import numpy as np
-from collections import namedtuple
-V3 = namedtuple('Point3', ['x', 'y', 'z'])
+class Triangle:
+    """
+    Dibuja un triangulo
+    Algoritmo realizado utilizando como referencia:
+    https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection,
+    https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+    """
+
+    def __init__(self, v0, v1, v2, p_material = Material()):
+        self.coords = [v0, v1, v2]
+        self.material = p_material
+        
+    def ray_intersect(self, orig, dir):
+        
+        EPSILON = 0.0000001
+        
+        v0, v1, v2 = self.coords
+
+        v0v1 = sub(v1,v0)
+        v0v2 = sub(v2,v0)
+
+        pvec = cross(dir, v0v2)
+
+        det = dot(v0v1, pvec)
+        det_inv = 1 / det  
+        
+        if -EPSILON < det < EPSILON: #-Ep < det < Ep
+            return None
+
+        tvec = sub(orig, v0)
+
+        u = dot(tvec, pvec) * det_inv
+
+        if u > 1 or u < 0:
+            return None
+
+        qvec = cross(tvec, v0v1)
+
+        v = dot(dir, qvec) * det_inv
+        
+        if v < 0 or u + v > 1:
+            return None
+
+        t:float = dot(v0v2, qvec) * det_inv
+
+        if t <= EPSILON:
+            return None
+        
+        hit = add(orig, mul(dir, t))
+        normal = cross(v0v1, v0v2)
+        normal = div(normal, norm(normal))
+        
+        return Intersect(distance = t,
+                         point = hit, 
+                         normal = normal,
+                         texCoords = (u,v),
+                         sceneObj = self)
+    
+    
+        
+        
+        
+
 
 class AABB:
     # * Axis Aligned Bounding Box
