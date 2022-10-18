@@ -47,7 +47,7 @@ class DirectionalLight:
         light_dir = [x*-1 for x in self.direction]
 
         shadow_intensity = 0
-        shadow_intersect = raytracer.sceneIntersect(intersect.point, light_dir, intersect.sceneObj)
+        shadow_intersect = raytracer.scene_intersect(intersect.point, light_dir, intersect.sceneObj)
         if shadow_intersect:
             shadow_intensity = 1
 

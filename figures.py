@@ -127,12 +127,13 @@ class Triangle:
         v0v2 = sub(v2,v0)
 
         pvec = cross(dir, v0v2)
-
-        det = dot(v0v1, pvec)
-        det_inv = 1 / det  
         
-        if -EPSILON < det < EPSILON: #-Ep < det < Ep
+        det = dot(v0v1, pvec)
+        
+        if -EPSILON < det and det < EPSILON: #-Ep < det < Ep
             return None
+
+        det_inv = 1 / det  
 
         tvec = sub(orig, v0)
 
@@ -150,18 +151,17 @@ class Triangle:
 
         t:float = dot(v0v2, qvec) * det_inv
 
-        if t <= EPSILON:
-            return None
-        
-        hit = add(orig, mul(dir, t))
-        normal = cross(v0v1, v0v2)
-        normal = div(normal, norm(normal))
-        
-        return Intersect(distance = t,
-                         point = hit, 
-                         normal = normal,
-                         texCoords = (u,v),
-                         sceneObj = self)
+        if t > EPSILON:
+            
+            hit = add(orig, mul(dir, t))
+            normal = cross(v0v1, v0v2)
+            normal = div(normal, norm(normal))
+            
+            return Intersect(distance = t,
+                            point = hit, 
+                            normal = normal,
+                            texCoords = (u,v),
+                            sceneObj = self)
     
     
         

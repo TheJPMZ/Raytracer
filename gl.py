@@ -205,6 +205,11 @@ class Raytracer(object):
 
         finalColor = [a*b for a,b in zip(finalColor, objectColor)]
 
+        if material.texture and intersect.texCoords:
+            texture_color = material.texture.getColor(intersect.texCoords[1], intersect.texCoords[0])
+            if texture_color:
+                finalColor = [a*b for a,b in zip(finalColor, texture_color)]
+
         r,g,b = map(lambda x: min(1,x), finalColor)
 
         return (r,g,b)
